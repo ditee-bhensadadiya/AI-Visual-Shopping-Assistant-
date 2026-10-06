@@ -111,6 +111,10 @@ create policy "Users manage own uploads" on public.uploads for all to authentica
 create policy "Users manage own saved products" on public.saved_products for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
 create policy "Users manage own price alerts" on public.price_alerts for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
 -- Processing outputs and embeddings remain inaccessible to client roles.
+grant usage on schema public to anon, authenticated, service_role;
+grant select on public.products, public.product_images, public.retailers, public.retailer_products, public.price_history to anon, authenticated;
+grant select, insert, update, delete on public.uploads, public.saved_products, public.price_alerts to authenticated;
+grant all on all tables in schema public to service_role;
 
 insert into storage.buckets(id,name,public,file_size_limit) values
  ('uploads','uploads',false,52428800),('product-images','product-images',true,10485760)

@@ -2,7 +2,7 @@
 
 ## Status
 
-This document records the Phase 0 architecture and implementation plan. It does not implement application features. The repository currently contains `phases.md` and `spac.md`; it has no `SPEC.md`, source code, dependency manifests, tests, migrations, or Git metadata. `spac.md` is treated as the project specification because its contents match the specification referenced by the phases document. Rename it to `SPEC.md` in a documentation cleanup if desired; no source document was changed for this plan.
+This document records the Phase 0 architecture baseline. Phase 1 adds the Supabase migration, seed data, server-side client and product repository, and tests. The project specification is now `SPEC.md`; the phase plan remains named `phases.md` in this checkout. No Git metadata is present.
 
 ## Product scope
 
@@ -190,3 +190,7 @@ Phase 0 is complete when this document is accepted as the architecture baseline.
 - The product specification and phase plan are currently named `spac.md` and `phases.md`, while their contents refer to `SPEC.md` and `PHASES.md`.
 - No source code, runtime environment, dependency manifest, Supabase project, or Git repository was present to validate against.
 - Technology names are proposed by the supplied specification; dependency versions, provider availability, costs, and deployment details remain unverified and intentionally undecided in Phase 0.
+
+## Phase 2 implementation note
+
+Phase 2 introduces `backend/app/config.py`, the FastAPI app factory and `/api/health` route, structured request/error logging, request IDs, CORS settings, and an isolated frontend application. Vite proxies `/api` to the local backend; the browser client calls the same endpoint used by the health/status UI. Uploads, authentication screens, detection, identification, product matching, pricing, and retailer integrations remain future-phase work.

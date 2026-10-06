@@ -1,7 +1,7 @@
 """Optional CRUD smoke test against configured Supabase (local or disposable project)."""
 import os
 import unittest
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from app.database.client import get_supabase_client
 from app.database.products import ProductRepository
@@ -19,10 +19,10 @@ class SupabaseCrudIntegrationTests(unittest.TestCase):
         try:
             created = repository.create({"name": name, "category": "test"})
             product_id = created["id"]
-            self.assertEqual(repository.get(__import__("uuid").UUID(product_id))["name"], name)
-            updated = repository.update(__import__("uuid").UUID(product_id), {"brand": "Test Brand"})
+            self.assertEqual(repository.get(UUID(product_id))["name"], name)
+            updated = repository.update(UUID(product_id), {"brand": "Test Brand"})
             self.assertEqual(updated["brand"], "Test Brand")
         finally:
             if product_id:
-                repository.delete(__import__("uuid").UUID(product_id))
+                repository.delete(UUID(product_id))
 
