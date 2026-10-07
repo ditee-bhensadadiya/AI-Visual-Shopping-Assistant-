@@ -16,6 +16,8 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import router
+from app.api.detections import router as detections_router
+from app.api.uploads import router as uploads_router
 from app.config import Settings
 
 
@@ -50,15 +52,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(
         title="AI Visual Shopping Assistant API",
         version="0.1.0",
-        description="Phase 2 application foundation.",
+        description="Visual shopping assistant API.",
     )
+    app.state.settings = settings
     logger = logging.getLogger("app.http")
 
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
         allow_credentials=False,
-        allow_methods=["GET", "OPTIONS"],
+        allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type", "X-Request-ID"],
         expose_headers=["X-Request-ID"],
     )
@@ -136,6 +139,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
 
     app.include_router(router)
+    app.include_router(uploads_router)
+    app.include_router(detections_router)
     return app
 
 

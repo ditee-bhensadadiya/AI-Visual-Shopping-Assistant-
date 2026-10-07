@@ -139,8 +139,9 @@ These are candidate technologies, not selected versions or claims of integration
 
 ### Phase 5 — Product identification
 
-- Add provider interface, selected VLM adapter, structured Pydantic output, confidence handling, and persistence.
-- Acceptance: a detected crop yields validated product attributes.
+- Add a structured OpenAI Vision adapter that analyzes the full image, finds broad product types, estimates boxes and attributes, and persists identified products.
+- Keep brands unknown when evidence is weak; include provider errors and model configuration.
+- Acceptance: a product in a supported image yields validated name/category/brand attributes and a crop, with uncertain brands represented explicitly.
 
 ### Phase 6 — Embeddings and matching
 
@@ -194,3 +195,15 @@ Phase 0 is complete when this document is accepted as the architecture baseline.
 ## Phase 2 implementation note
 
 Phase 2 introduces `backend/app/config.py`, the FastAPI app factory and `/api/health` route, structured request/error logging, request IDs, CORS settings, and an isolated frontend application. Vite proxies `/api` to the local backend; the browser client calls the same endpoint used by the health/status UI. Uploads, authentication screens, detection, identification, product matching, pricing, and retailer integrations remain future-phase work.
+
+## Phase 3 implementation note
+
+Phase 3 adds a React upload page and `POST /api/uploads`. The backend bounds reads, validates JPEG/PNG/WebP content with Pillow, stores opaque paths in the private Supabase `uploads` bucket, inserts an `uploads` row with `processing_status='uploaded'`, and returns a short-lived signed URL for preview. Until Phase 10 adds Supabase Auth, records use a null `user_id`; the additive Phase 3 migration makes that column nullable while leaving RLS owner policies intact. Detection and later processing are not triggered by upload.
+
+## Phase 4 implementation note
+
+Phase 4 adds an on-demand `POST /api/uploads/{upload_id}/detect` route backed by a detector protocol and a lazy local Ultralytics YOLO adapter. It stores validated pixel-coordinate detections in the existing `detections` table, writes JPEG crops to the private uploads bucket, updates upload processing status, and returns short-lived crop URLs for the frontend bounding-box overlay. The default YOLO26n weights detect general COCO object classes; product identification and catalog matching remain later-phase work.
+
+## Phase 5 implementation note
+
+The same on-demand route now uses a local Ollama vision model on the full uploaded image, so it can identify product types outside YOLO's fixed class list without a paid AI API call. It validates structured product names, categories, brand evidence, optional model/color, confidence estimates, and approximate normalized boxes; stores detections and `identified_products`; and retains the private crop previews. The uploaded original remains in Supabase Storage. Recognition and brand claims remain estimates.

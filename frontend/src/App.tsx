@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import { useHealth } from "./hooks/useHealth";
+import UploadPage from "./UploadPage";
 
 function ApiIndicator() {
   const health = useHealth();
@@ -46,9 +47,7 @@ function HomePage() {
           A visual shopping assistant that will help turn inspiration into product matches and price comparisons.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
-          <a href="#how-it-works" className="rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2">
-            Explore the workflow
-          </a>
+          <NavLink to="/upload" className="rounded-full bg-stone-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2">Upload an image</NavLink>
           <ApiIndicator />
         </div>
         {health.state === "disconnected" && (
@@ -62,9 +61,9 @@ function HomePage() {
         <div className="flex items-center justify-between border-b border-stone-100 pb-5">
           <div>
             <p className="text-sm font-semibold text-stone-900">A simpler way to shop</p>
-            <p className="mt-1 text-xs text-stone-500">The foundation is ready for the next phase</p>
+            <p className="mt-1 text-xs text-stone-500">Upload an inspiration image to begin</p>
           </div>
-          <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">Phase 2</span>
+          <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-600">Phase 3</span>
         </div>
 
         <div className="mt-5 flex gap-2" role="tablist" aria-label="Workflow type">
@@ -99,7 +98,7 @@ function HomePage() {
           ))}
         </div>
         <p className="mt-5 text-xs leading-5 text-stone-500">
-          Upload and AI processing arrive in later phases. This screen is a foundation preview.
+          Images are stored privately. Product detection and matching arrive in later phases.
         </p>
       </section>
     </main>
@@ -153,6 +152,7 @@ function AppLayout() {
           </NavLink>
           <nav className="flex items-center gap-2 sm:gap-5" aria-label="Main navigation">
             <NavLink to="/" end className={({ isActive }) => `rounded-full px-3 py-2 text-sm font-medium ${isActive ? "text-stone-950" : "text-stone-500 hover:text-stone-900"}`}>Home</NavLink>
+            <NavLink to="/upload" className={({ isActive }) => `rounded-full px-3 py-2 text-sm font-medium ${isActive ? "text-stone-950" : "text-stone-500 hover:text-stone-900"}`}>Upload</NavLink>
             <NavLink to="/status" className={({ isActive }) => `rounded-full px-3 py-2 text-sm font-medium ${isActive ? "text-stone-950" : "text-stone-500 hover:text-stone-900"}`}>Status</NavLink>
           </nav>
         </div>
@@ -160,6 +160,7 @@ function AppLayout() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/status" element={<StatusPage />} />
+        <Route path="/upload" element={<UploadPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <footer className="border-t border-stone-200/80 px-5 py-5 text-center text-xs text-stone-500">
